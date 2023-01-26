@@ -1,0 +1,27 @@
+# TERMINAL
+sudo hive;
+show databases;
+create database salahs_db;
+create database second_db;
+show databases;
+drop database second_db;
+create table employee(id int, Name string, Salary float) row format delimited fields terminated by ',';
+show tables;
+describe employee;
+INSERT INTO table employee VALUES(101, 'salah', 2000);
+select * from employee;
+
+# LOADING DATA INTO HIVE
+CREATE TABLE fitness_data(txtno INT, ymd STRING, custno INT, amount FLOAT, category STRING, product STRING, city STRING, state STRING, spentby STRING) row format delimited fields  terminated by ',';
+LOAD DATA LOCAL INPATH '/home/cloudera/Desktop/txns1.txt' INTO TABLE fitness_data;
+
+# QUERIES ARE LIKE SQL
+CREATE TABLE activities(Activity_no INT, activity_name STRING) row format delimited fields terminated by ',';
+INSERT INTO TABLE activities VALUES(001,'Air Sports'),(002,'Games'); SELECT fd.custno, fd.amount, ac.activity_name from fitness_data AS fd JOIN activities AS ac ON (fd.category = ac.activity_name)
+
+
+SELECT fitness_data.custno, fitness_data.amount, activities.activity_name from fitness_data JOIN activities on (fitness_data.category = activities.activity_name)
+
+SELECT fd.custno, fd.amount, ac.activity_name from fitness_data AS fd JOIN activities AS ac ON (fd.category = ac.activity_name)
+
+SELECT fitness_data.custno, fitness_data.amount,  from fitness_data WHERE fitness_data.category in (select activities.activity_name from activities)

@@ -1,0 +1,27 @@
+Firstly, we move the file to hdfs as follows,
+hdfs dfs -put /home/cloudera/Desktop/c_card.csv /c_card.csv
+
+to check if it has been moved there:
+hdfs dfs -cat /c_card.csv
+
+--
+Spark Commands
+spark-shell
+
+var linesRDD =sc.textFile("hdfs:///c_card.csv")
+var wordsRDD = linesRDD.flatMap(_.split(" "))
+var wordsKvRdd = wordsRDD.map((_,1))
+var wordCounts = wordsKvRdd.reduceByKey(_+_)
+wordCounts.saveAsTextFile("my_spark_output2")
+
+--
+
+checking the spark output:
+
+hdfs dfs -ls
+
+hadoop fs -ls my_spark_output2
+
+read the file:
+
+hadoop fs -cat my_spark_output2/part-00000

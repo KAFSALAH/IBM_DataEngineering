@@ -1,0 +1,52 @@
+In case it does not initially work
+
+sudo service hbase-master stop
+sudo service hbase-regionserver stop
+hdfs dfs -rm -r /hbase/*
+echo "rmr /hbase" | zookeeper-client
+sudo service hbase-master start
+sudo service hbase-regionserver start
+---
+1. sudo jps
+check for “HMaster” service
+2. sudo service hbase-master start
+3. hbase shell
+hbase shell to start the hbase.
+4. create 'table1test','cf'
+5. list
+--
+WORKED BELOW!!!
+{create "test", "Length","width","depth","age","class"
+hdfs dfs -put '/home/cloudera/Desktop/iris.csv' /tmp
+hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.separator=',' -Dimporttsv.columns="HBASE_ROW_KEY,one:Length,one:width,two:depth,two:age,two:class" test1 hdfs:///tmp/iris.csv}
+
+--
+
+
+create 'obesity_tb','Metrics'
+hdfs dfs -put '/home/cloudera/Desktop/Assignment_dataset.csv' /tmp
+hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.separator=',' -Dimporttsv.columns="HBASE_ROW_KEY,Metrics:Gender,Metrics:Age,Metrics:Height,Metrics:Weight,Metrics:family_history_with_overweight,Metrics:FAVC,Metrics:FCVC,Metrics:NCP,Metrics:CAEC,Metrics:SMOKE,Metrics:CH2O,Metrics:SCC,Metrics:FAF,Metrics:TUE,Metrics:CALC,Metrics:MTRANS,Metrics:NObeyesdad" obesity_tb hdfs:///tmp/Assignment_dataset.csv
+
+
+queries
+
+scan 'obesity_tb'
+
+scan 'obesity_tb' , {COLUMNS => ['Metrics:Gender', 'Metrics:Age']}
+scan 'obesity_tb' , {COLUMNS => ['Metrics:Gender', 'Metrics:Age'], LIMIT => 5}
+scan 'obesity_tb' , {COLUMNS => ['Metrics:Height', 'Metrics:Weight', 'Metrics:NObeyesdad'] , LIMIT => 10}
+get 'obesity_tb', '10'
+get 'obesity_tb', '10', {COLUMN => 'Metrics: Weight'}
+deleteall 'obesity_tb', '10'
+
+get 'obesity_tb', '11'
+put 'obesity_tb', '11', 'Metrics:Age', 33
+get 'obesity_tb', '11'
+
+put 'obesity_tb', '2211', 'Metrics:Age', 33
+put 'obesity_tb', '2211', 'Metrics:Height', 1.73
+
+scan 'obesity_tb', { FILTER => SingleColumnValueFilter.new(Bytes.toBytes('Metrics'), Bytes.toBytes('Age'), CompareFilter::CompareOp.valueOf('GREATER_OR_EQUAL'),BinaryComparator.new(Bytes.toBytes('25')))}
+
+
+alter 'obesity_tb', {NAME => 'Additional_info'}
